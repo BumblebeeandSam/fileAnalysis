@@ -6,15 +6,23 @@ def main():
     count = 0
     chunk_size = 16
     size = os.path.getsize('hexDump.py')
-    print(size)
+    retstring = ""
     with open("hexDump.py", "rb") as file_bytes:
         for chunk in range(int(size/chunk_size)):
-            count = read_bytes(count, file_bytes)
-        read_bytes(count, file_bytes)
-    return None
+            count, retstring = read_bytes(retstring, count, file_bytes)
+        count, retstring = read_bytes(retstring, count, file_bytes)
+    print("len", len(retstring))
+    return retstring
 
 
-def read_bytes(count: int, file_object: file) -> int:
+def log(retstring: str, content1: str, content2: str, content3: str) -> str:
+    content = content1 + content2 + content3
+    retstring += content + "\n"
+    print(content)
+    return retstring
+
+
+def read_bytes(retstring: str, count: int, file_object) -> int:
     """
     Returns count += 1
     Given a file_object, read 16 bytes from it, format the bytes,
@@ -35,11 +43,11 @@ def read_bytes(count: int, file_object: file) -> int:
 
     print_count = ('0' * (8 - len(hex(count)))) + hex(count)[2:] + '0'
 
-    print(print_count, target_print, value_print)
+    retstring = log(retstring, print_count, target_print, value_print)
 
     count += 1
 
-    return count
+    return count, retstring
 
 
 def format(byte):
